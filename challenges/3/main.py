@@ -277,8 +277,17 @@ df_cleaned = pd.json_normalize(data, record_path="time_series",
                                meta=["id","type"])
 print(df_cleaned)
 df_cleaned.head()
-df_cleaned.set_index(["id","type"], inplace=True)
-df_cleaned
+#df_cleaned.set_index(["id","type"], inplace=True)
 #df_cleaned.to_csv(r"C:\Users\annabel.peel\Documents\A29\Annabel Peel\Personal\Interview\flattened_data.csv")
-df_cleaned = pd.to_datetime(df_cleaned["timestamp"], unit="s")
-df_cleaned
+df_cleaned["datetime"] = pd.to_datetime(df_cleaned["timestamp"], unit="s")
+df_cleaned.head()
+df_cleaned.set_index("datetime", inplace=True)
+df_cleaned.sort_index(inplace=True)
+df_cleaned.head()
+df_cleaned['rolling_mean'] = df_cleaned["value"].rolling("1H").mean()
+df_cleaned.head()
+max_rolling_mean = df_cleaned["rolling_mean"].max()
+max_rolling_mean_time = df_cleaned["rolling_mean"].idxmax()
+
+print(f"Maximum rolling mean value: {max_rolling_mean}")
+print(f"At time: {max_rolling_mean_time}")
